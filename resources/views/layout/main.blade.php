@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sidafarmticket</title>
-  <link rel="shortcut icon" type="image/png" href="./assets/images/logos/favicon.png" />
-  <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}" />
+  <link rel="shortcut icon" type="image/png" href="./assets/images/logos/sidafarm.png" />
+  <link rel="stylesheet" href="{{ asset('assets/css/admin/styles.min.css') }}" />
 </head>
 
 <body>
@@ -18,7 +18,7 @@
         <div>
           <div class="brand-logo d-flex align-items-center justify-content-between">
             <a href="dashboardadmin" class="text-nowrap logo-img">
-              <img src="{{ asset('assets/images/logos/logo.svg') }}" alt="" width="220" />
+              <img src="{{ asset('assets/images/logos/logo.png') }}" alt="" width="220" />
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
               <i class="ti ti-x fs-6"></i>
@@ -82,7 +82,7 @@
                     <span class="d-flex">
                       <i class="ti ti-shopping-cart"></i>
                     </span>
-                    <span class="hide-menu">Orders</span>
+                    <span class="hide-menu">Order</span>
                   </div>
                 </a>
               </li>
@@ -95,7 +95,7 @@
                     <span class="d-flex">
                       <i class="ti ti-credit-card"></i>
                     </span>
-                    <span class="hide-menu">Transactions</span>
+                    <span class="hide-menu">Transaksi</span>
                   </div>
                 </a>
               </li>
@@ -133,7 +133,6 @@
             </ul>
             <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
               <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                
                 <li class="nav-item dropdown">
                   <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   </div>

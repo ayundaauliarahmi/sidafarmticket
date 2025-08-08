@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengunjung;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PengunjungController extends Controller
@@ -10,24 +11,30 @@ class PengunjungController extends Controller
     // Menampilkan data pengunjung
     public function index()
     {
-        $pengunjungs = Pengunjung::all(); 
+        $users = User::where('level', 'pengunjung')->get();
+        $pengunjungs = Pengunjung::with('user')
+        ->whereHas('user', function ($query) {
+            $query->where('level', 'pengunjung');
+        })
+        ->get();
+
         $jumlahPengunjung = Pengunjung::count();
-        return view('admin.pengunjung.index',compact('pengunjungs','jumlahPengunjung'));
+        return view('admin.pengunjung.index',compact('users','pengunjungs','jumlahPengunjung'));
     }
 
     public function create()
     {
-        return view('admin.pengunjung.create');
+        $users = User::where('level', 'pengunjung')->get();
+        return view('admin.pengunjung.create', compact('users'));
     }
 
-    // Menyimpan data sampah
+    // Menyimpan data pengunjung
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_lengkap' => 'required|string|max:100',
-            'email' => 'required|string|max:200',
-            'no_hp' => 'required|string'
+            'user_id' => 'required|exists:users,user_id',
         ]);
+
         Pengunjung::create($validated);
         return redirect()->route('admin.pengunjung.index')->with('pesan', 'Pengunjung berhasil ditambahkan');
     }
@@ -35,33 +42,32 @@ class PengunjungController extends Controller
     // Menampilkan form untuk edit data paket wisata
     public function edit($id)
     {
-        $dataPengunjung = Pengunjung::findOrFail($id);
-        return view('admin.pengunjung.edit', compact('dataPengunjung'));
+        $dataPengunjung = Pengunjung::with('user')->findOrFail($id);
+        $users = User::where('level', 'pengunjung')->get();
+        return view('admin.pengunjung.edit', compact('dataPengunjung','users'));
     }
 
     // Memperbarui data paket wisata
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_lengkap' => 'required|string|max:100',
-            'email' => 'required|string|max:200',
-            'no_hp' => 'required|string'
-        ]);
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //        'user_id' => 'required|exists:users,user_id',
+    //     ]);
 
-        $dataPengunjung= Pengunjung::findOrFail($id);
+    //     $dataPengunjung= Pengunjung::findOrFail($id);
 
-            $dataPengunjung->nama_lengkap = $request->nama_lengkap;
-            $dataPengunjung->email = $request->email;
-            $dataPengunjung->no_hp = $request->no_hp;
-            $dataPengunjung->save();
+    //         $dataPengunjung->nama_lengkap = $request->nama_lengkap;
+    //         $dataPengunjung->email = $request->email;
+    //         $dataPengunjung->no_hp = $request->no_hp;
+    //         $dataPengunjung->save();
 
-            return redirect()->route('admin.pengunjung.index')->with('success', 'Data pengunjung berhasil diperbarui.');
-    }
+    //     return redirect()->route('admin.pengunjung.index')->with('success', 'Data pengunjung berhasil diperbarui.');
+    // }
 
     // Menghapus data pengunjung
-    public function destroy($id)
-    {
-        Pengunjung::destroy($id);
-        return redirect()->route('admin.pengunjung.index')->with('pesan','Data berhasil dihapus');
-    }
+    // public function destroy($id)
+    // {
+    //     Pengunjung::destroy($id);
+    //     return redirect()->route('admin.pengunjung.index')->with('pesan','Data berhasil dihapus');
+    // }
 }

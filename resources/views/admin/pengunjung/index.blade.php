@@ -30,17 +30,17 @@
             <tr>
               <td class="px-0">
                 <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataPengunjung->nama_lengkap }}</div>
+                  <div class="ms-3">{{ $dataPengunjung->user->nama ?? '-' }}</div>
                 </div>
               </td>
               <td class="px-0">
                 <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataPengunjung->email }}</div>
+                  <div class="ms-3">{{ $dataPengunjung->user->email ?? '-' }}</div>
                 </div>
               </td>
               <td class="px-0">
                 <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataPengunjung->no_hp }}</div>
+                  <div class="ms-3">{{ $dataPengunjung->user->no_hp ?? '-' }}</div>
                 </div>
               </td>
               <td class="text-center">

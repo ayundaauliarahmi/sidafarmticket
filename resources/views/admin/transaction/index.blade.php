@@ -32,7 +32,7 @@
             <tr>
               <td class="px-0">
                 <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataTransaction->orders->pengunjung->nama_lengkap ?? '-' }}</div>
+                  <div class="ms-3">{{ $dataTransaction->orders->pengunjung->user->nama ?? '-' }}</div>
                 </div>
               </td>
               <td class="px-0">

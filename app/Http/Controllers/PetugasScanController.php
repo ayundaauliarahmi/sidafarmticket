@@ -3,70 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\PetugasScan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PetugasScanController extends Controller
 {
-    // Menampilkan data pwtugas scan
+    // Menampilkan semua data petugas scan
     public function index()
     {
-        $petugasscans = PetugasScan::all(); 
-        return view('admin.petugasscan.index',compact('petugasscans'));
+        $users = User::where('level', 'petugas_scan')->get();
+        $petugasscans = PetugasScan::with('user')
+        ->whereHas('user', function ($query) {
+            $query->where('level', 'petugas_scan');
+        })
+        ->get();
+
+        return view('admin.petugasscan.index', compact('petugasscans','users'));
     }
 
+
+    // Menampilkan form tambah petugas scan
     public function create()
     {
-        return view('admin.petugasscan.create');
+        $users = User::where('level', 'petugas_scan')->get();
+        return view('admin.petugasscan.create', compact('users'));
     }
 
-    // Menyimpan data sampah
+    // Menyimpan data petugas scan
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'username' => 'required|string|max:100',
-            'email' => 'required|string|max:200',
-            'no_hp' => 'required|string',
-            'password' => 'required|string'
+            'user_id' => 'required|exists:users,user_id',
         ]);
+
         PetugasScan::create($validated);
-        return redirect()->route('admin.petugasscan.index')->with('pesan', 'petugasscan berhasil ditambahkan');
+        return redirect()->route('admin.petugasscan.index')->with('pesan', 'Petugas scan berhasil ditambahkan.');
     }
 
-    // Menampilkan form untuk edit data paket wisata
+    // Menampilkan form edit
     public function edit($id)
     {
-        $dataPetugasScan = PetugasScan::findOrFail($id);
-        return view('admin.petugasscan.edit', compact('dataPetugasScan'));
+        $users = User::where('level', 'petugas_scan')->get();
+        $dataPetugasScan = PetugasScan::with('user')->findOrFail($id);
+        return view('admin.petugasscan.edit', compact('dataPetugasScan', 'users'));
     }
 
-    // Memperbarui data paket wisata
+    // Memperbarui data petugas scan
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama' => 'required|string|max:100',
-            'username' => 'required|string|max:100',
-            'email' => 'required|string|max:200',
-            'no_hp' => 'required|string',
-            'password' => 'required|string'
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,user_id',
         ]);
 
-        $dataPetugasScan= PetugasScan::findOrFail($id);
+        $petugasScan = PetugasScan::findOrFail($id);
+        $petugasScan->update($validated);
 
-            $dataPetugasScan->nama = $request->nama;
-            $dataPetugasScan->username = $request->username;
-            $dataPetugasScan->email = $request->email;
-            $dataPetugasScan->no_hp = $request->no_hp;
-            $dataPetugasScan->password = $request->password;
-            $dataPetugasScan->save();
-
-            return redirect()->route('admin.petugasscan.index')->with('success', 'Data petugas scan berhasil diperbarui.');
+        return redirect()->route('admin.petugasscan.index')->with('success', 'Data petugas scan berhasil diperbarui.');
     }
 
-    // Menghapus data pengunjung
+    // Menghapus data petugas scan
     public function destroy($id)
     {
         PetugasScan::destroy($id);
-        return redirect()->route('admin.petugasscan.index')->with('pesan','Data berhasil dihapus');
+        return redirect()->route('admin.petugasscan.index')->with('pesan', 'Data petugas scan berhasil dihapus.');
     }
 }

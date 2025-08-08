@@ -13,42 +13,36 @@ class OrderController extends Controller
     // Menampilkan data order
     public function index()
     {
-        $orders = Order::with('pengunjung','paketwisata')->get();
+        $orders = Order::with('pengunjung','items')->get();
         return view('admin.order.index', compact('orders'));
     }
 
+    
     public function create()
     {
         $pengunjung = Pengunjung::all();
         $paketwisata = PaketWisata::all();
-        return view('admin.order.create', compact('pengunjung','paketwisata'));
+
+        return view('admin.order.create', compact('pengunjung', 'paketwisata'));
     }
 
-    // Menyimpan data sampah
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'pengunjung_id' => 'required|integer',
-            'paket_id' => 'required|integer',
-            'jumlah' => 'required|integer|min:1',
-            'tgl_kunjungan' => 'required|date'
+            'pengunjung_id'   => 'required|integer',
+            'tgl_kunjungan'   => 'required|date',
         ]);
-        
-        // Mengambil harga order 
-        $paket = PaketWisata::findOrFail($validated['paket_id']);
-        $total_harga = $validated['jumlah'] * $paket->harga;
-        // Simpan data order
-        Order::create([
-            'pengunjung_id'=> $validated['pengunjung_id'],
-            'paket_id'=> $validated['paket_id'],
-            'jumlah'=> $validated['jumlah'],
-            'total_harga'=> $total_harga,
-            'tgl_kunjungan'=> $validated['tgl_kunjungan'],
-            'tgl_order'=> now(), 
+
+        $order = Order::create([
+            'pengunjung_id'     => $validated['pengunjung_id'],
+            'tgl_kunjungan'     => $validated['tgl_kunjungan'],
+            'tgl_order'         => now(),
+            'total_harga'       => 0, // default dulu, dihitung setelah input item
             'status_pembayaran' => 'belum bayar'
         ]);
 
-        return redirect()->route('admin.order.index')->with('pesan', 'Orderan berhasil ditambahkan');
+        return redirect()->route('admin.orderitem.create', $order->order_id)
+                        ->with('pesan', 'Data pembeli berhasil ditambahkan, lanjut pilih paket wisata');
     }
 
     // Menampilkan form untuk edit data order
@@ -56,8 +50,7 @@ class OrderController extends Controller
     {
         $dataOrder = Order::findOrFail($id);
         $pengunjung = Pengunjung::all();
-        $paketwisata = PaketWisata::all();
-        return view('admin.order.edit', compact('dataOrder','pengunjung','paketwisata'));
+        return view('admin.order.edit', compact('dataOrder','pengunjung'));
     }
 
     // Memperbarui data order
@@ -65,22 +58,13 @@ class OrderController extends Controller
     {
         $validated = $request->validate([
             'pengunjung_id' => 'required|integer',
-            'paket_id' => 'required|integer',
-            'jumlah' => 'required|integer|min:1',
             'tgl_kunjungan' => 'required|date',
             'status_pembayaran' => 'required|string|max:200'
         ]);
-        // dd($validated);
-
-        $paket = PaketWisata::findOrFail($validated['paket_id']);
-        $total_harga = $validated['jumlah'] * $paket->harga;
-
         $dataOrder= Order::findOrFail($id);
         $dataOrder->update([
             'pengunjung_id'     => $validated['pengunjung_id'],
-            'paket_id'          => $validated['paket_id'],
-            'jumlah'            => $validated['jumlah'],
-            'total_harga'       => $total_harga,
+            'total_harga'       => $validated['total_harga'],
             'tgl_kunjungan'     => $validated['tgl_kunjungan'],
             'status_pembayaran' => $validated['status_pembayaran'],
         ]);

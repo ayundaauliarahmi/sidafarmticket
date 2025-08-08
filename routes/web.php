@@ -1,22 +1,27 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\PaketWisataController;
 use App\Http\Controllers\PengunjungController;
 use App\Http\Controllers\PetugasScanController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TransactionController;
 use App\Models\Pengunjung;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-
-
-
-
+Auth::routes(['verify' => true]);
 
 Route::get('/', function () {
+    return view('pengunjung/index');
+});
+
+Route::get('/login', function () {
     return view('login');
 });
+
 
 Route::get('/dashboardadmin', function () {
     $jumlahPengunjung = Pengunjung::count();
@@ -63,6 +68,11 @@ Route::prefix('order')->group(function () {
     Route::delete('/{order}', [OrderController::class, 'destroy'])->name('admin.order.destroy');
 });
 
+Route::prefix('ordemitem')->group(function () {
+    Route::get('/create/{order_id}', [OrderItemController::class, 'create'])->name('admin.orderitem.create');
+    Route::post('/store', [OrderItemController::class, 'store'])->name('admin.orderitem.store');
+});
+
 Route::prefix('transaction')->group(function () {
     Route::get('/', [TransactionController::class, 'index'])->name('admin.transaction.index');
     Route::get('/create', [TransactionController::class, 'create'])->name('admin.transaction.create');
@@ -71,3 +81,6 @@ Route::prefix('transaction')->group(function () {
     Route::put('/{transaction}/edit', [TransactionController::class, 'update'])->name('admin.transaction.update');
     Route::delete('/{transaction}', [TransactionController::class, 'destroy'])->name('admin.transaction.destroy');
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

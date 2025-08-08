@@ -13,7 +13,7 @@ class Order extends Model
     protected $primaryKey = 'order_id';
 
     protected $fillable = [
-        'pengunjung_id', 'paket_id', 'jumlah', 'total_harga', 'tgl_kunjungan', 'tgl_order', 'status_pembayaran'
+        'pengunjung_id', 'total_harga', 'tgl_kunjungan', 'tgl_order', 'status_pembayaran'
     ];
 
     public function pengunjung()
@@ -21,8 +21,15 @@ class Order extends Model
         return $this->belongsTo(Pengunjung::class, 'pengunjung_id');
     }
 
-    public function paketwisata()
+    public function items()
     {
-        return $this->belongsTo(PaketWisata::class, 'paket_id');
+        return $this->hasMany(OrderItem::class, 'order_id','order_id');
     }
+
+    public function transaksi()
+    {
+        return $this->hasOne(Transaction::class, 'order_id', 'order_id');
+    }
+
+
 }

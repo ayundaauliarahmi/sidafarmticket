@@ -20,7 +20,6 @@
           <thead class="table-success text-center">
             <tr>
               <th scope="col" class="px-0 text-muted">Nama Petugas</th>
-              <th scope="col" class="px-0 text-muted">Username</th>
               <th scope="col" class="px-0 text-muted">Email</th>
               <th scope="col" class="px-0 text-muted">No Telepon</th>
               <th scope="col" class="px-0 text-muted">Aksi</th>
@@ -31,22 +30,17 @@
             <tr>
               <td class="px-0">
                 <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataPetugasScan->nama }}</div>
+                  <div class="ms-3">{{ $dataPetugasScan->user->nama ?? '-'  }}</div>
                 </div>
               </td>
               <td class="px-0">
                 <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataPetugasScan->username}}</div>
+                  <div class="ms-3">{{ $dataPetugasScan->user->email ?? '-'  }}</div>
                 </div>
               </td>
               <td class="px-0">
                 <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataPetugasScan->email }}</div>
-                </div>
-              </td>
-              <td class="px-0">
-                <div class="d-flex align-items-center justify-content-center">
-                  <div class="ms-3">{{ $dataPetugasScan->no_hp }}</div>
+                  <div class="ms-3">{{ $dataPetugasScan->user->no_hp ?? '-'  }}</div>
                 </div>
               </td>
               <td class="text-center">

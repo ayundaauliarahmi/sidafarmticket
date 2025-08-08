@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 
 class PetugasScan extends Model
 {
@@ -13,6 +14,16 @@ class PetugasScan extends Model
     protected $primaryKey = 'petugas_id';
 
     protected $fillable = [
-        'nama', 'username', 'email', 'no_hp', 'password'
+        'user_id'
     ];
+
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
+
+
+
+
